@@ -1,0 +1,494 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage[left=2cm, top=3cm, text={17cm, 24cm}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[unicode, colorlinks, hypertexnames=false, citecolor=red]{hyperref}
+\usepackage{tabto}
+\usepackage{placeins}
+\hypersetup{colorlinks = true, hypertexnames = false}
+\usepackage{pdflscape}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning,shapes}
+\usepackage{pdflscape}
+
+\renewcommand{\labelenumi}{\alph{enumi})}
+
+\setlength\parindent{0pt}
+
+\usepackage{fancyvrb}
+
+% [David Chocholatý]: pro definice, teorémy, ....
+\usepackage{amsthm}
+% - Definice.
+\theoremstyle{definition}
+\newtheorem{definition}{Definice}[section]
+
+% - Teorém.
+\theoremstyle{definition}
+\newtheorem{theorem}{Teorém}[section]
+
+% - Lemma.
+\theoremstyle{definition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+% - Příklad.
+\theoremstyle{remark}
+\newtheorem{example}{Příklad}[section]
+
+\setlength{\parindent}{20pt}
+
+% redefine \VerbatimInput
+\RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}%
+{fontsize=\footnotesize,
+ %
+ frame=lines,  % top and bottom rule only
+ framesep=2em, % separation between frame and text
+ rulecolor=\color{gray},
+ %
+ label=\fbox{\color{black}udpData.txt},
+ labelposition=topline,
+ %
+ %commandchars=\|\(\), % escape character and argument delimiters for
+                      % commands within the verbatim
+ %commentchar=*        % comment character
+}
+
+\lstdefinestyle{BashInputStyle}{
+  language=bash,
+  basicstyle=\small\sffamily,
+  %numbers=left,
+  %numberstyle=\scriptsize,
+  %numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{cyan!5},
+  linewidth=0.9\linewidth,
+  %xleftmargin=0.1\linewidth
+}
+
+\newcommand*{\Package}[1]{\texttt{#1}}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{CLanguage}{
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate={á}{{\'a}}1 {ú}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1   {ý}{{\'y}}1 {č}{{\v{c}}}1 {ť}{{\'t}}1 {ľ}{{\'l}}1 
+}
+
+\begin{document}
+
+    %Titulni strana
+    \begin{titlepage}
+        \begin{center}
+            \includegraphics[width=0.87\textwidth]{logo_cz.png}
+            \vspace*{6cm}
+
+            \Huge{\textbf{Teoretická informatika 2023/2024}}
+            \vspace{0.5cm}
+            
+            \LARGE{Úkol 1}
+            \vspace{1cm}
+            
+            \Large{David Chocholatý (xchoch09)}
+            
+           \vfill
+		   \begin{flushright} 
+		   Brno, \today
+		   \end{flushright}
+        \end{center}
+    \end{titlepage}
+
+\pagestyle{fancy}
+\lhead{\bfseries Teoretická informatika 2023/2024 --- Úkol 1}
+\rhead{\bfseries xchoch09}
+
+\section{Příklad 1}
+Mějme následující jazyky:
+
+\begin{enumerate}[label=(\alph*)]
+    \item $L_1 = \{ww^R \, | \, w \in \{a,b,c\}^\ast\}$
+    \item $L_2 = \{w \, | \, w \in \{a,b,c\}^\ast \; \wedge \; \#_a(w) \, mod \, 2 = \#_b(w) \, mod \, 2 = 1\}$
+\end{enumerate}
+
+Rozhodněte a dokažte, zda jazyky $L_1 \cap L_2$ a $L_1 \cup L_2$ jsou regulární. Pro důkaz regularity sestrojte příslušný konečný automat, nebo gramatiku. Pro důkaz neregularity použijte Pumping lemma, nebo Myhill-Nerodovu větu. 
+
+\subsection{Řešení}
+
+Uvažujme zadané jazyky $L_1$ a $L_2$. Neformálně řečeno, jazyk $L_1$ představuje dobře známý bezkontextový jazyk, který obsahuje všechny řetězce nad $\Sigma = \{a,b,c\}$, které jsou konkatenací dvou stejně dlouhých řetězců takových, že druhý řetězec je reverzací prvního řetězce. Vyplývá, že $L_1 \notin \mathcal{L}_3$, přičemž by to bylo možné dokázat pomocí Pumping lemmatu podobně, jako je tomu následně pro $L_1 \cup L_2$.
+
+Jazyk $L_2$ obsahuje všechny řetězce nad $\Sigma = \{a, b, c\}$ takové, že počet symbolů $a$ i $b$ je lichý. Jelikož počet kombinací sudosti a lichosti počtu symbolů $a$ a $b$ je konečný, lze řetězce jazyka $L_2$ přijímat například úplně definovaným deterministickým konečným automatem, a tudíž $L_1 \in \mathcal{L}_3$. Kompletní důkaz by bylo možné provést pomocí Myhill-Nerodovy věty nebo sestrojením zmiňovaného úplně definovaného deterministického konečného automatu.
+
+\begin{itemize}
+    \item $L_1 \cap L_2$
+
+    Průnikem jazyků $L_1$ a $L_2$ vzniká nový jazyk 
+    
+    $$L_1 \cap L_2 = \{ww^R \, | \, w \in \{a,b,c\}^\ast \; \wedge \; \#_a(ww^R) \, mod \, 2 = \#_b(ww^R) \, mod \, 2 = 1\}.$$
+
+    Jelikož jazyk $L_1 \cap L_2$ je průnikem regulárního a bezkontextového jazyka, lze z uzávěrových vlastností $\mathcal{L}_2$ vůči průniku s regulárními jazyky usoudit, že výsledný jazyk bude regulární (viz \cite{handbook}). To může pro nově vzniklý jazyk platit tehdy a jen tehdy, když
+    
+    $$L_1 \cap L_2 = \emptyset \in \mathcal{L}_3 \iff \nexists ww^R \in \{a, b, c\}^\ast: \#_a(ww^R) \, mod \, 2 = \#_b(ww^R) \, mod \, 2 = 1.$$
+
+    \begin{lemma}
+        \label{lemma1}
+        $\nexists ww^R \in \{a, b, c\}^\ast: \#_a(ww^R) \, mod \, 2 = \#_b(ww^R) \, mod \, 2 = 1.$
+    \end{lemma}
+
+    \begin{proof}
+        Důkaz bude proveden sporem. Předpokládejme, že
+        
+        $$\exists ww^R \in \{a, b, c\}^\ast: \#_a(ww^R) \, mod \, 2 = \#_b(ww^R) \, mod \, 2 = 1.$$
+
+        Uvažujme libovolné $ww^R \in \{a,b,c\}^\ast$. Vyplývá, že $\#_a(ww^R) = 2 * \#_a(w)$ a $\#_b(ww^R) = 2 * \#_b(w)$. Nutně ovšem musí pro všechna $ww^R$ platit, že $\#_a(ww^R) \, mod \, 2 = \#_b(ww^R) \, mod \, 2 = 2$. Tudíž docházíme ke sporu s předpokladem, že existuje řetězec $ww^R$ obsahující lichý počet symbolů $a$ i $b$.
+    \end{proof}
+
+    Na základě lemmatu \ref{lemma1} platí, že $L_1 \cap L_2 = \emptyset \in \mathcal{L}_3$ (jedná se tedy o regulární jazyk), přičemž takový jazyk je možné přijmout úplně definovaným deterministickým konečným automatem
+
+    $$M_1 = (\{s\}, \{a,b,c\}, \delta, s, \emptyset),$$
+
+    kde
+
+    \begin{align*}
+        \delta: (s, a) &= \{s\}, \\
+        (s, b) &= \{s\}, \\
+        (s, c) &= \{s\}. \\            
+    \end{align*}
+    
+    Stavový diagram úplně definovaného deterministického konečného automatu $M_1$ je vyobrazen na obrázku \ref{fig:m1}.
+
+     \begin{figure}[ht!]
+    \begin{center}
+        \hspace*{0.15\linewidth}    
+        
+        \begin{tikzpicture}[shorten >=1pt,node distance=5cm,on grid,auto]
+          \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+        
+          \node[state,initial,initial text=] (s_0)                 {$s$};          
+        
+          \path[->]
+          (s_0) edge  [loop above]   node {$a, b, c$} ();
+        \end{tikzpicture}
+    \caption{Stavový diagram úplně definovaného deterministického konečného automatu $M_1$.}
+    \label{fig:m1}
+    \end{center}
+    \end{figure}
+    \FloatBarrier
+    
+    \item $L_1 \cup L_2$
+
+    Sjednocením jazyků $L_1$ a $L_2$ vzniká nový jazyk
+
+    $$L_1 \cup L_2 = \{ww^R \, | \, w \in \{a,b,c\}^\ast\} \cup \{w \, | \, w \in \{a,b,c\}^\ast \; \wedge \; \#_a(w) \, mod \, 2 = \#_b(w) \, mod \, 2 = 1\}.$$
+
+    Na základě skutečnosti, že jazyk $L_1 \cup L_2$ je sjednocením regulárního a neregulárního (bezkontextového) jazyka, je předpokládáno, že $L_1 \cup L_2 \notin \mathcal{L}_3$.
+
+    \begin{lemma}
+        $L_1 \cup L_2 = \{ww^R \, | \, w \in \{a,b,c\}^\ast\} \cup \{w \, | \, w \in \{a,b,c\}^\ast \; \wedge \; \#_a(w) \, mod \, 2 = \#_b(w) \, mod \, 2 = 1\} \notin \mathcal{L}_3.$
+    \end{lemma}
+
+    \begin{proof}
+        Důkaz sporem pomocí Pumping lemmatu. Předpokládejme, že $L_1 \cup L_2 \in \mathcal{L}_3$. Pak dle Pumping lemmatu platí, že
+
+        \begin{align*}
+            \exists k > 0: &\forall w \in \Sigma^\ast: w \in L_1 \cup L_2 \wedge |w| \geq k \implies \\
+            &\exists x, y, z \in \Sigma^\ast: w = xyz \wedge y \neq \varepsilon \wedge |xy| \leq k \wedge \forall i \geq 0: xy^iz \in L_1 \cup L_2.
+        \end{align*}
+
+        Uvažujme libovolné $k > 0$ a zvolme $w = a^kbba^k$. Platí, že $w \in L_1 \cup L_2 \wedge |w| = 2 * k + 2 \geq k$. Pro každé rozdělení slova $w$ platí, že $w = xyz \wedge y \neq \varepsilon \wedge |xy| \leq k$. Zřejmě
+
+        \begin{align*}
+            x &= a^{\alpha_1}, 0 \leq \alpha_1 < k, \\
+            y &= a^{\alpha_2}, 1 \leq \alpha_2 \leq k \wedge \alpha_1 + \alpha_2 = k, \\
+            z &= a^{k - \alpha_1 - \alpha_2}bba^k. \\
+        \end{align*}
+
+        Zvolme $i = 0$. Pak $xy^0z = a^{\alpha_1}a^{k - \alpha_1 - \alpha_2}bba^k = a^{k - \alpha_2}bba^k$. Dle Pumping lemmatu by mělo platit, že $a^{k - \alpha_2}bba^k \in L_1 \cup L_2$. To platí tehdy a jen tehdy, když
+        
+        $$k - \alpha_2 = k \lor ((k - \alpha_2 + k) \, mod \, 2 = 2 \, mod \, 2 = 1).$$
+        
+        \begin{itemize}
+            \item $k - \alpha_2 = k$:
+            
+            Nastane pouze v případě, že $\alpha_2 = 0$, ovšem to je ve sporu s předpokladem, že $\alpha_2 \geq 1$.
+            \item $(k - \alpha_2 + k) \, mod \, 2 = 2 \, mod \, 2 = 1$:
+            
+            Nastane pouze v případě, že $(k - \alpha_2 + k) \, mod \, 2 = 1 \wedge 2 \, mod \, 2 = 1$. Druhá část výrazu ovšem nikdy nemůže nastat a vyplývá, že celý výraz neplatí.
+        \end{itemize}
+        Tudíž, $a^{k - \alpha_2}bba^k \notin L_1 \cup L_2$ a dochází ke sporu s předpokladem, že $L_1 \cup L_2 \in \mathcal{L}_3$.
+    \end{proof}
+\end{itemize}
+
+\section{Příklad 2}
+Uvažujme jazyk $L_3 = \{puvw \, | \, p, v \in \{a,b\}^\ast, u, w \in \{c,d\}^\ast, (p = v^R \lor u = w^R)\}$
+
+\begin{enumerate}[label=(\alph*)]
+    \item Sestrojte bezkontextovou gramatiku $G_3$ takovou, že $L(G_3) = L_3$.
+    \item Sestrojte zásobníkový automat $Z_3$ takový, že $L(Z_3) = L_3$.
+\end{enumerate}
+
+\subsection{Řešení}
+
+\begin{enumerate}[label=(\alph*)]
+    \item Řešením je bezkontextová gramatika
+
+    $$G_3 = (N, \Sigma, P, S),$$
+
+    kde
+
+    \begin{align*}
+        N = \{&S, A, B, C, D\}, \\
+        \Sigma = \{&a, b, c, d\}, \\
+        P = \{&S \rightarrow AB \, | \, CD, \\
+              &A \rightarrow B \, | \, aAa \, | \, bAb, \\
+              &B \rightarrow \varepsilon \, | \, cB \, | \, dB, \\
+              &C \rightarrow \varepsilon \, | \, aC \, | \, bC, \\
+              &D \rightarrow C \, | \, cDc \, | \, dDd\}. \\            
+    \end{align*}
+
+    \item Řešením je zásobníkový automat $Z_3$, jehož stavový diagram je vyobrazen na obrázku \ref{fig:pushdownautomaton}. Notace pravidel je zapisována ve tvaru, kdy jako vrchol zásobníku je uvažován symbol nejvíce napravo.
+
+    \begin{landscape}    
+        \hfill
+        \begin{figure}[ht!]
+        \begin{center}
+            \hspace*{0.15\linewidth}    
+            
+            \begin{tikzpicture}[shorten >=1pt,node distance=3cm,on grid,auto]
+              \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+            
+              \node[state,initial,initial text=\#] (s_0)       at (0, 0)          {$q_0$};      \node[state]                    (s_1) at (3.5, 2) {$q_1$};              
+          \node[state]                    (s_2) at (7, 2)  {$q_2$};          
+          \node[state]                    (s_3) at (10.5, 2)  {$q_3$};
+          \node[state]                    (s_4) at (14, 2)  {$q_4$};
+          
+          \node[state]                    (s_5) at (3.5, -2)  {$q_5$};
+          \node[state]                    (s_6) at (7, -2)  {$q_6$};
+          \node[state]                    (s_7) at (10.5, -2)  {$q_7$};
+          \node[state]                    (s_8) at (14, -2)  {$q_8$};
+          \node[state,accepting]                    (s_9) at (17.5, 0)  {$q_9$};
+          %\node[state,accepting]                    (s_5) at (11, 0)  {$s_5$};
+              %\node[state]                    (s_1) [right of=s_0]  {$p$};
+              %\node[state]                    (s_2) [right of=s_1]  {$p$};
+              %\node[state,accepting]          (s_3) [right of=s_2]  {$f$};              
+
+              \path[->]
+              (s_0) edge                node {$\varepsilon, \#/\#$}  (s_1)
+              (s_1) edge                node [text width=1.0cm,align=left] {$\varepsilon, \#/\#$\\ $\varepsilon, a/a$\\ $\varepsilon, b/b$}  (s_2)
+              (s_1) edge  [loop above]   node [text width=1.0cm,align=left] {$a, \#/\#a$\\ $a, a/aa$\\ $a, b/ba$\\ $b, \#/\#b$\\ $b, a/ab$\\ $b, b/bb$} ()
+              (s_2) edge  [loop above]   node [text width=1.0cm,align=left] {$c, \#/\#$\\ $c, a/a$\\ $c, b/b$\\ $d, \#/\#$\\ $d, a/a$\\ $d, b/b$} ()
+              (s_2) edge                node [text width=1.0cm,align=left] {$\varepsilon, \#/\#$\\ $\varepsilon, a/a$\\ $\varepsilon, b/b$}  (s_3)
+              (s_3) edge                node {$\varepsilon, \#/\#$}  (s_4)
+              (s_3) edge  [loop above]   node [text width=1.0cm,align=left] {$a, a/\varepsilon$\\ $b, b/\varepsilon$} ()
+              (s_4) edge                node {$\varepsilon, \#/\varepsilon$}  (s_9)
+              (s_4) edge  [loop above]   node [text width=1.0cm,align=left] {$c, \#/\#$\\ $d, \#/\#$} ()
+              (s_0) edge                node {$\varepsilon, \#/\#$}  (s_5)
+              (s_5) edge                node {$\varepsilon, \#/\#$}  (s_6)
+              (s_5) edge  [loop below]   node [text width=1.0cm,align=left] {$a, \#/\#$\\ $b, \#/\#$} ()
+              (s_6) edge                node [text width=1.0cm,align=left] {$\varepsilon, \#/\#$\\ $\varepsilon, c/c$\\ $\varepsilon, d/d$}  (s_7)
+              (s_6) edge  [loop below]   node [text width=1.0cm,align=left] {$c, \#/\#c$\\ $c, c/cc$\\ $c, d/dc$\\ $d, \#/\#d$\\ $d, c/cd$\\ $d, d/dd$} ()
+              (s_7) edge                node [text width=1.0cm,align=left] {$\varepsilon, \#/\#$\\ $\varepsilon, c/c$\\ $\varepsilon, d/d$}  (s_8)
+              (s_7) edge  [loop below]   node [text width=1.0cm,align=left] {$a, \#/\#$\\ $a, c/c$\\ $a, d/d$\\ $b, \#/\#$\\ $b, c/c$\\ $b, d/d$} ()
+              (s_8) edge                node {$\varepsilon, \#/\varepsilon$}  (s_9)
+              (s_8) edge  [loop below]   node [text width=1.0cm,align=left] {$c, c/\varepsilon$\\ $d, d/\varepsilon$} ();
+              %\path[->]
+              %(s_0) edge                node {$a, S/Sa$}  (s_1)
+              %(s_1) edge  [loop above]  node {$a, a/aa$}  ()
+              %(s_1) edge                node {$b, a/\varepsilon$} (s_2)
+              %(s_2) edge  [loop above]  node {$b, a/\varepsilon$} ()
+              %(s_2) edge                node {$\varepsilon, S/\varepsilon$}  (s_3);
+            \end{tikzpicture}
+        \caption{Stavový diagram zásobníkového automatu $Z_3$.}
+        \label{fig:pushdownautomaton}
+        \end{center}
+    \end{figure}                 
+    \end{landscape}    
+\end{enumerate}
+
+\section{Příklad 3}
+Rozhodněte a dokažte následující tvrzení:
+
+\begin{enumerate}[label=(\alph*)]
+    \item $\exists L_1 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$ takový, že jeho doplněk $\overline{L_1}$ je konečný jazyk.
+    \item $\exists L_1 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$ takový, že $\forall L_2 \in \mathcal{L}_3: L_1 \cap L_2 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$
+    \item $\exists L_1 \in \mathcal{L}_3$ takový, že $\forall L_2 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3: L_1 \cap L_2 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$
+\end{enumerate}
+
+\subsection{Řešení}
+
+\begin{enumerate}[label=(\alph*)]
+    \item Tvrzení neplatí. Uvažujme libovolný jazyk $L_1 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$. Zároveň takový jazyk není konečný, jelikož by náležel do třídy konečných jazyků, značené $\mathcal{L}_{FIN}$, $\mathcal{L}_{FIN} \subset \mathcal{L}_3$.
+    
+    Dále bude proveden důkaz sporem. Stanovme, že $\overline{L_1} \in \mathcal{L}_{FIN}$ a předpokládejme, že $L_1 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$. Jelikož $\overline{L_1} \in \mathcal{L}_{FIN}$, potom platí, že $\overline{L_1} \in \mathcal{L}_3$. Dle uzavřenosti třídy regulárních jazyků vůči operaci doplňku vyplývá, že $L_1 \in \mathcal{L}_3$, přičemž dochází ke sporu.
+
+    \item Tvrzení neplatí. Důkaz bude proveden sporem. Uvažujme libovolný jazyk $L_1 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$. Dále stanovme, že $L_2 = \emptyset$, přičemž $L_2 \in \mathcal{L}_3$. Potom nutně platí, že $L_1 \cap L_2 = \emptyset \in \mathcal{L}_3$ a dochází ke sporu.
+    \item Tvrzení platí. Stanovme, že $L_1 = \Sigma^\ast \in \mathcal{L}_3$. Dále uvažujme libovolný jazyk $L_2 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$, přičemž $L_2 \subset L_1$. Vyplývá, že $L_1 \cap L_2 = L_2 \in \mathcal{L}_2 \, \backslash \, \mathcal{L}_3$.
+\end{enumerate}
+
+\section{Příklad 4}
+Uvažujme jazyk $L = \{w \in \{a,b\}^\ast \, | \, \#_a(w) \geq 2 \; \lor \; \#_b(w) = 0\}$. Sestrojte relaci pravé kongruence $\sim$, která splňuje následující dvě podmínky: 1) $L$ je sjednocením některých tříd rozkladu $\Sigma^\ast / \sim$ a 2) index $\sim$ je o jedna větší než index $\sim_L$.
+
+\subsection{Řešení}
+Nejprve sestrojíme úplně definovaný deterministický konečný automat, který neobsahuje nedostupné stavy. Pro to, aby index $\sim$ byl o jedna větší než index $\sim_L$, je nejprve zapotřebí sestrojit minimální úplně definovaný deterministický konečný automat, abychom zjistili počet tříd rozkladu $\Sigma^\ast / \sim_L$.
+
+Minimální úplně definovaný deterministický konečný automat pro jazyk $L$ je vyobrazen na obrázku \ref{fig:minimal}. Důkaz toho, že se jedná o minimální úplně definovaný deterministický konečný automat, by bylo možné provést s využitím Myhill-Nerodovy věty nebo algoritmu pro převod úplně definovaného deterministického konečného automatu na redukovaný deterministický konečný automat.
+
+
+\begin{figure}[ht!]
+    \begin{center}
+        \hspace*{0.15\linewidth}    
+        
+        \begin{tikzpicture}[shorten >=1pt,node distance=5cm,on grid,auto]
+          \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+        
+          \node[state,initial,accepting,initial text=] (s_0)       at (0, 0)          {$s_0$};
+          \node[state,accepting]                    (s_1) at (3, 2) {$s_1$};
+          \node[state,accepting]                    (s_2) [right of=s_1]  {$s_2$};
+          \node[state]                    (s_3) at (3, -2)  {$s_3$};
+          \node[state]                    (s_4) [right of=s_3]  {$s_4$};
+          %\node[state]                    (s_5) [below of=s_2]  {$s_3$};
+          %\node[state]                    (s_2) at (1, -1.5)  {$t$};
+        
+          \path[->]
+          (s_0) edge                node {$a$}  (s_1)
+          (s_1) edge                node {$a$}  (s_2)
+          (s_1) edge                node {$b$}  (s_4)
+          (s_0) edge                node {$b$}  (s_3)
+          (s_3) edge                node {$a$}  (s_4)
+          (s_4) edge                node {$a$}  (s_2)
+          (s_3) edge  [loop below]   node {$b$} ()
+          (s_4) edge  [loop below]   node {$b$} ()
+          (s_2) edge  [loop above]   node {$a, b$} ();
+          %(s_0) edge  [loop above]   node {$a, b, c$} ();
+
+          %\path[->]
+          %(s_0) edge                node {a}  (s_1)
+          %(s_1) edge                node {b}  (s_2)
+          %(s_2) edge                node {c}  (s_0);
+        \end{tikzpicture}
+    \caption{Stavový diagram minimálního úplně definovaného deterministického konečného automatu pro jazyk $L$.}
+    \label{fig:minimal}
+    \end{center}
+    \end{figure}
+    \FloatBarrier
+
+Úplně definovaný deterministický konečný automat pro relaci pravé kongruence $\sim$ nesmí být minimální. Tento konečný automat je vyobrazen na obrázku \ref{fig:notminimal}. Dále rozklad $\Sigma^\ast / \sim$ musí obsahovat navíc právě jednu třídu oproti rozkladu $\Sigma^\ast / \sim_L$. Tudíž, index relace $\sim$ bude o jedna větší oproti indexu relace $\sim_L$.
+
+\begin{figure}[ht!]
+    \begin{center}
+        \hspace*{0.15\linewidth}    
+        
+        \begin{tikzpicture}[shorten >=1pt,node distance=5cm,on grid,auto]
+          \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+        
+          \node[state,initial,accepting,initial text=] (s_0)       at (0, 0)          {$s_0$};
+          \node[state,accepting]                    (s_1) at (3, 2) {$s_1$};
+          \node[state,accepting]                    (s_2) [right of=s_1]  {$s_2$};
+          \node[state]                    (s_3) at (3, -2)  {$s_3$};
+          \node[state]                    (s_4) [right of=s_3]  {$s_4$};
+          \node[state,accepting]                    (s_5) at (11, 0)  {$s_5$};
+          %\node[state]                    (s_5) [below of=s_2]  {$s_3$};
+          %\node[state]                    (s_2) at (1, -1.5)  {$t$};
+        
+          \path[->]
+          (s_0) edge                node {$a$}  (s_1)
+          (s_1) edge                node {$a$}  (s_2)
+          (s_1) edge                node {$b$}  (s_4)
+          (s_0) edge                node {$b$}  (s_3)
+          (s_3) edge                node {$a$}  (s_4)          
+          (s_3) edge  [loop below]   node {$b$} ()
+          (s_4) edge  [loop below]   node {$b$} ()
+          (s_2) edge  [loop above]   node {$a$} ()
+          (s_2) edge                node {$b$}  (s_5)
+          (s_4) edge                node {$a$}  (s_5)
+          (s_5) edge  [loop right]   node {$a, b$} ();
+          %(s_0) edge  [loop above]   node {$a, b, c$} ();
+
+          %\path[->]
+          %(s_0) edge                node {a}  (s_1)
+          %(s_1) edge                node {b}  (s_2)
+          %(s_2) edge                node {c}  (s_0);
+        \end{tikzpicture}
+    \caption{Stavový diagram neminimálního úplně definovaného deterministického konečného automatu pro jazyk $L$.}
+    \label{fig:notminimal}
+    \end{center}
+    \end{figure}
+    \FloatBarrier
+
+\newpage
+\begin{definition}
+    \label{langdef}
+    Nechť $M = (Q, \Sigma, \delta, s_0, F)$ je nedeterministický konečný automat a nechť $q \in Q$. Jazyk přístupových řetězců stavu $q$ je definován následovně
+
+    $$L^{-1}(q) = \{w \in \Sigma^\ast \; | \; (s_0, w) \vdash^\ast (q, \varepsilon)\}.$$
+\end{definition}
+
+Dále za použití definice \ref{langdef} najdeme jazyky přístupových řetězců nad $\Sigma = \{a, b\}$ všech stavů neminimálního úplně definovaného deterministického konečného automatu:
+
+\begin{align*}
+    L^{-1}(s_0) &= \{w \in \Sigma^\ast \; | \; \#_a(w) = 0 \wedge \#_b(w) = 0\}, \\
+    L^{-1}(s_1) &= \{w \in \Sigma^\ast \; | \; \#_a(w) = 1 \wedge \#_b(w) = 0\}, \\
+    L^{-1}(s_2) &= \{w \in \Sigma^\ast \; | \; \#_a(w) \geq 2 \wedge \#_b(w) = 0\}, \\
+    L^{-1}(s_3) &= \{w \in \Sigma^\ast \; | \; \#_a(w) = 0 \wedge \#_b(w) \geq 1\}, \\
+    L^{-1}(s_4) &= \{w \in \Sigma^\ast \; | \; \#_a(w) = 1 \wedge \#_b(w) \geq 1\}, \\    
+    L^{-1}(s_5) &= \{w \in \Sigma^\ast \; | \; \#_a(w) \geq 2 \wedge \#_b(w) \geq 1\}. \\
+\end{align*}
+
+Najdeme rozklad množiny $\Sigma^\ast$, který je daný jako množina jazyků přístupových řetězců jednotlivých stavů:
+
+$$P = \{L^{-1}(s_0), L^{-1}(s_1), L^{-1}(s_2), L^{-1}(s_3), L^{-1}(s_4), L^{-1}(s_5)\}.$$
+
+Najdeme pravou kongruenci k tomuto rozkladu takovou, že $P = \Sigma^\ast / \sim$:
+
+\begin{align*}
+    \forall u,v \in \Sigma^\ast: u \sim v \iff &(\#_a(u) = 0 \wedge \#_a(v) = 0 \wedge \#_b(u) = 0 \wedge \#_b(v) = 0) \lor \\
+    &(\#_a(u) = 1 \wedge \#_a(v) = 1 \wedge \#_b(u) = 0 \wedge \#_b(v) = 0) \lor \\
+    &(\#_a(u) \geq 2 \wedge \#_a(v) \geq 2 \wedge \#_b(u) = 0 \wedge \#_b(v) = 0) \lor \\
+    &(\#_a(u) = 0 \wedge \#_a(v) = 0 \wedge \#_b(u) \geq 1 \wedge \#_b(v) \geq 1) \lor \\
+    &(\#_a(u) = 1 \wedge \#_a(v) = 1 \wedge \#_b(u) \geq 1 \wedge \#_b(v) \geq 1) \lor \\    
+    &(\#_a(u) \geq 2 \wedge \#_a(v) \geq 2 \wedge \#_b(u) \geq 1 \wedge \#_b(v) \geq 1). \\    
+\end{align*}
+
+\begin{itemize}
+    \item Jistě jde o relaci ekvivalence, protože vznikla z rozkladu množiny.
+    \item Jistě jde o pravou kongruenci, protože jde o ekvivalenci, které vznikla pomocí jazyka přístupových řetězců stavů konečného automatu.
+    \item Sjednocením některých tříd rozkladu $\Sigma^\ast / \sim$ získáme jazyk $L$:
+
+    $$L = L^{-1}(s_0) \cup L^{-1}(s_1) \cup L^{-1}(s_2) \cup L^{-1}(s_5) = \{w \in \{a, b\}^\ast \; | \; \#_a(w) \geq 2 \lor \#_b(w) = 0\}.$$
+
+    Index $\sim$ je o jedna větší oproti indexu prefixové ekvivalence $\sim_L$, neboť $|\Sigma^\ast / \sim| = 6$ a $|\Sigma^\ast / \sim_L| = 5$.
+\end{itemize}
+
+\newpage
+
+\bibliographystyle{czechiso}
+\renewcommand{\refname}{Použitá literatura}
+\bibliography{main}
+
+\end{document}
