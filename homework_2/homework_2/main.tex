@@ -1,0 +1,431 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage[left=2cm, top=3cm, text={17cm, 24cm}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[unicode, colorlinks, hypertexnames=false, citecolor=red]{hyperref}
+\usepackage{tabto}
+\usepackage{placeins}
+\hypersetup{colorlinks = true, hypertexnames = false}
+\usepackage{pdflscape}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning,shapes}
+\usepackage{pdflscape}
+
+\renewcommand{\labelenumi}{\alph{enumi})}
+
+\setlength\parindent{0pt}
+
+\usepackage{fancyvrb}
+
+% [David Chocholatý]: pro definice, teorémy, ....
+\usepackage{amsthm}
+% - Definice.
+\theoremstyle{definition}
+\newtheorem{definition}{Definice}[section]
+
+% - Teorém.
+\theoremstyle{definition}
+\newtheorem{theorem}{Teorém}[section]
+
+% - Lemma.
+\theoremstyle{definition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+% - Příklad.
+\theoremstyle{remark}
+\newtheorem{example}{Příklad}[section]
+
+\setlength{\parindent}{20pt}
+
+% redefine \VerbatimInput
+\RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}%
+{fontsize=\footnotesize,
+ %
+ frame=lines,  % top and bottom rule only
+ framesep=2em, % separation between frame and text
+ rulecolor=\color{gray},
+ %
+ label=\fbox{\color{black}udpData.txt},
+ labelposition=topline,
+ %
+ %commandchars=\|\(\), % escape character and argument delimiters for
+                      % commands within the verbatim
+ %commentchar=*        % comment character
+}
+
+\lstdefinestyle{BashInputStyle}{
+  language=bash,
+  basicstyle=\small\sffamily,
+  %numbers=left,
+  %numberstyle=\scriptsize,
+  %numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{cyan!5},
+  linewidth=0.9\linewidth,
+  %xleftmargin=0.1\linewidth
+}
+
+\newcommand*{\Package}[1]{\texttt{#1}}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{CLanguage}{
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate={á}{{\'a}}1 {ú}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1   {ý}{{\'y}}1 {č}{{\v{c}}}1 {ť}{{\'t}}1 {ľ}{{\'l}}1 
+}
+
+\begin{document}
+
+    %Titulni strana
+    \begin{titlepage}
+        \begin{center}
+            \includegraphics[width=0.87\textwidth]{logo_cz.png}
+            \vspace*{6cm}
+
+            \Huge{\textbf{Teoretická informatika 2023/2024}}
+            \vspace{0.5cm}
+            
+            \LARGE{Úkol 2}
+            \vspace{1cm}
+            
+            \Large{David Chocholatý (xchoch09)}
+            
+           \vfill
+		   \begin{flushright} 
+		   Brno, \today
+		   \end{flushright}
+        \end{center}
+    \end{titlepage}
+
+\pagestyle{fancy}
+\lhead{\bfseries Teoretická informatika 2023/2024 --- Úkol 2}
+\rhead{\bfseries xchoch09}
+
+\section{Příklad 1}
+Rozhodněte a dokažte, zda je jazyk $L_{prime} = \{w \in \Sigma^\ast \, : \, |w| \text{ je prvočíslo}\}$ nad abecedou $\Sigma = \{a, b\}$ bezkontextový. Pro důkaz bezkontextovosti sestavte gramatiku či zásobníkový automat. Pro důkaz nebezkontextovosti použijte pumping lemma nebo uzávěrové vlastnosti.
+
+\subsection{Řešení}
+Jazyk $L_{prime}$ je jazyk, který obsahuje řetězce nad abecedou $\Sigma = \{a, b\}$ takové, že jejich délka je rovna nějakému prvočíslu $p$, $p \in \mathbb{N} \wedge p > 1$. Na základě definice je prvočíslo takové přirozené číslo větší než $1$, které je dělitelné pouze číslem jedna a samo sebou. Abychom o přirozeném čísle $p$ mohli rozhodnout, jestli je či není prvočíslo, je nutné ověřit, zda není dělitelné nějakým přirozeným číslem z rozsahu $\langle 2, \sqrt{p}\rangle$. To by ovšem znamenalo pro zásobníkový automat $M$, který by přijímal jazyk $L_{prime}$, že by $M$ musel disponovat i druhým zásobníkem. Dle definice zásobníkového automatu $M$ ovšem obsahuje pouze jeden zásobník\footnote{Pokud by zásobníkový automat $M$ obsahoval dva zásobníky, byla by jeho výpočetní síla rovna Turingovým strojům, viz \cite{book}.}.
+
+Na základě výše uvedeného je rozhodnuto, že $L_{prime} \notin \mathcal{L}_2$. To bude dokázáno pomocí Pumping lemmatu pro bezkontextové jazyky.
+
+\begin{lemma}
+    $L_{prime} = \{w \in \{a, b\}^\ast \, : \, |w| \text{ je prvočíslo}\} \notin \mathcal{L}_2$.
+\end{lemma}
+
+\begin{proof}
+    Důkaz sporem pomocí Pumping lemmatu pro bezkontextové jazyky. Předpokládejme, že $L_{prime} \in \mathcal{L}_2$. Pak dle Pumping lemmatu pro bezkotextové jazyky platí, že
+
+    \begin{align*}
+            \exists k > 0 : &\forall z \in \Sigma^\ast : z \in L_{prime} \wedge |z| \geq k \implies \\
+            &\exists u, v, w, x, y \in \Sigma^\ast : z = uvwxy \wedge vx \neq \varepsilon \wedge |vwx| \leq k \wedge \forall i \geq 0: uv^iwx^iy \in L_{prime}.
+    \end{align*}
+
+    Uvažujme libovolné $k > 0$ a zvolme $z = a^{p-2}b^2$, kde $p$, $p \in \mathbb{N} \wedge p > 1$, je prvočíslo takové, že $p \geq k + 2$. Platí, že $z \in L_{prime} \wedge |z| = p - 2 + 2 = p \geq k$. Pro každé rozdělení slova $z$ takové, že $z = uvwxy \wedge vx \neq \varepsilon \wedge |vwx| \leq k$, nastane následující nezávisle na zastoupení symbolu $a$ nebo~$b$.
+    
+    Zvolme $i = |uwy|$. Na základě podmínek $|vwx| \leq k$ a $|z| \geq k + 2$ vyplývá, že $i \geq 2$. Platí, že
+
+    \begin{equation}
+    \label{eqn1}
+    |uv^iwx^iy| = |v^ix^i| + |uwy| = i * |vx| + |uwy|.
+    \end{equation}
+    
+    Z podmínek $i \geq 2$ a $vx \neq \varepsilon$ dohromady vyplývá, že $i * |vx| \geq 2$. Dále lze výsledek rovnice~\ref{eqn1} rozepsat ve tvaru
+
+    \begin{equation}
+    \label{eqn2}
+    i * |vx| + |uwy| = |uwy| * (1 + |vx|),
+    \end{equation}        
+
+    \noindent
+    kde $|uwy| \geq 2 \wedge (1 + |vx|) \geq 2$. Na základě rovnice \ref{eqn2} je porušena podmínka, že $|uv^iwx^iy| = p', p' \in \mathbb{N} \wedge p > 1$, kde $p'$ je nějaké prvočíslo. Tudíž $uv^iwx^iy \notin L_{prime}$ a dochází ke sporu s předpokladem, že $L_{prime} \in \mathcal{L}_2$.
+\end{proof}
+
+\section{Příklad 2}
+Uvažujte jazyk $L_{BKG} = \{\langle M \rangle\#\langle G \rangle \, : \, M \text{ je TS, } G \text{ je BKG, } L(G) \subseteq L(M)\}$ nad abecedou $\{0, 1, \#\}$ ($\langle G \rangle$ je kódování BKG $G$ do binárního řetězce). Rozhodněte a dokažte, zda jazyk $L_{BKG}$ (a) je rozhodnutelný, (b) je nerozhodnutelný, ale částečně rozhodnutelný, (c) není ani částečně rozhodnutelný. Pro důkaz (a) popište princip činnosti TS, který jazyk rozhoduje (není třeba sestavovat detailně přechodový diagram), pro důkaz (b) nebo (c) použijte redukci.
+
+\subsection{Řešení}
+Nejprve je nutné uvážit konečnost, případně nekonečnost ověření příslušnosti či nepříslušnosti do jazyka $L_{BKG}$. Ověření nepříslušnosti do jazyka je konečné (\textit{konečný certifikát nepříslušnosti}), protože stačí najít jediný řetězec $w \in \Sigma^\ast$ takový, pro který platí, že $w \in L(G) \wedge w \notin L(M)$. Naopak ověření příslušnosti do jazyka je nekonečné (\textit{nekonečný certifikát nepříslušnosti}), protože je nutné pro všechny řetězce, pro které platí, že $w' \in \Sigma^\ast, w' \in L(G)$, testovat, zda $w' \in L(M)$. Počet všech takových řetězců $w'$ konečné délky může být spočetně nekonečný, a tudíž i ověření příslušnosti do jazyka je nekonečné.
+
+Na základě výše uvedeného je rozhodnuto, že jazyk $L_{BKG}$ není ani částečně rozhodnutelný.
+
+\begin{lemma}
+    $L_{BKG} = \{\langle M \rangle\#\langle G \rangle \, : \, M \text{ je TS, } G \text{ je BKG, } L(G) \subseteq L(M)\}$ nad abecedou $\{0, 1, \#\}$. Jazyk $L_{BKG}$ není ani částečně rozhodnutelný.
+\end{lemma}
+
+\begin{proof}
+    Důkaz pomocí redukce $\text{co-}HP \leq L_{BKG}$, kde jazyk $\text{co-}HP$ je definován jako
+    
+    $$\text{co-}HP = \{\langle M_{\text{co-}HP} \rangle\#\langle w \rangle \, | \, M_{\text{co-}HP} \text{ nezastaví při } w\}.$$
+
+    \noindent
+    Požadovaná redukce je funkce $\sigma: \{0, 1, \#\}^\ast \rightarrow \{0, 1, \#\}^\ast$ definovaná následovně:
+
+    $$\sigma(\langle M_{\text{co-}HP} \rangle\#\langle w \rangle) = \langle M \rangle\#\langle G \rangle.$$
+
+    Funkce $\sigma$ vrací kód bezkontextové gramatiky (dále jen BKG) $G$, pro který platí $L(G) = \{a^nb^n \, | \, n \geq 0\}$. Pokud vstup $\langle M_{\text{co-}HP} \rangle\#\langle w \rangle$ není validní instance $\text{co-}HP$, pak funkce $\sigma$ vrací kód Turingova stroje (dále jen TS) $M$ takový, že $L(M) = \emptyset$ (tudíž $\langle M \rangle\#\langle G \rangle \notin L_{BKG}$), jinak vrací kód TS $M$, který pracuje následovně.
+    
+    Nejdříve TS $M$ spočítá délku řetězce $w'$ definovaného na vlastní vstupní pásce, přičemž $|w'| = m \geq 0$. Tato hodnota je následně uložena na novou pásku. Poté TS $M$ spustí simulaci stroje $M_{\text{co-}HP}$ na $w$ pro maximálně $m$ kroků (na další pásce).
+
+    \begin{itemize}
+        \item Pokud stroj $M_{\text{co-}HP}$ v rámci $m$ kroků \textbf{zastaví}, pak $M$ začne cyklit.
+        \item Pokud stroj $M_{\text{co-}HP}$ v rámci $m$ kroků \textbf{nezastaví}, pak $M$ přijme vlastní vstup.
+        
+    \end{itemize}
+
+    \noindent
+    Tudíž pro $M$ platí následující:
+
+    \begin{align*}
+        \langle M_{\text{co-}HP} \rangle\#\langle w \rangle \notin \text{co-}HP &\implies L(M) = \emptyset \implies \langle M \rangle\#\langle G \rangle \notin L_{BKG}. \\
+        \langle M_{\text{co-}HP} \rangle\#\langle w \rangle \in \text{co-}HP &\implies L(M) = \Sigma^\ast \implies \langle M \rangle\#\langle G \rangle \in L_{BKG}, \\        
+    \end{align*}
+
+    Je zřejmé, že uvedenou konstrukci BKG $G$ a TS $M$ lze implementovat pomocí úplného TS, a tedy funkce $\sigma$ je totální, rekurzivně vyčíslitelná funkce.
+\end{proof}
+
+\section{Příklad 3}
+Plný binární strom je graf $T = (V, E_L, E_R)$, kde $V$ je množina vrcholů, $E_L, E_R: V \rightarrow V$ jsou injektivní totální zobrazení \textit{levého} a \textit{pravého} následníka taková, že $img(E_L) \cap img(E_R) = \emptyset$, kde $img(f)$ značí \textit{obor hodnot} zobrazení $f$. Dále platí, že existuje právě jeden vrchol $r \in V$ takový, že $\nexists u \in V: (u, r) \in E_L \cup E_R$ a $\forall v \in V: (r, v) \in (E_L \cup E_R)^{RT}$, kde $A^{RT}$ značí reflexivně-tranzitivní uzávěr relace $A$.
+
+\begin{enumerate}[label=(\alph*)]
+    \item Dokažte, že množina $V$ je spočetně nekonečná (tj. existuje bijekce mezi $V$ a $\mathbb{N}$).
+    \item Nechť \textit{obarvení stromu} $T$ je funkce, která přiřazuje každému vrcholu $v \in V$ barvu $c(v) \in \{red, black\}$. Dokažte pomocí diagonalizace, že množina všech obarvení stromu $T$ je nespočetně nekonečná.
+\end{enumerate}
+
+\subsection{Řešení}
+
+\begin{enumerate}[label=(\alph*)]    
+    \item \label{enum:1}
+
+    \begin{theorem}
+        Nechť $T = (V, E_L, E_R)$ je plný binární strom, pak množina $V$ je spočetně nekonečná.
+    \end{theorem}
+    \begin{proof}
+        Nechť $T = (V, E_L, E_R)$ je plný binární strom výšky $\omega$, kde symbol $\omega$ značí množinu nezáporných celých čísel $\{0, 1, 2, ...\}$. Dále nechť $T_n$ značí množinu všech uzlů v úrovni $n \in \mathbb{N}, n < \omega$, přičemž počet uzlů v dané úrovni $n$ je dán vztahem $2^n$. Tudíž počet uzlů v jednotlivých úrovních $T_0, T_1, ..., T_n$ je konečný. Sjednocením všech úrovní stromu získáme množinu všech uzlů stromu, $V$, přičemž sjednocení spočetně nekonečně mnoha konečných množin je spočetně nekonečné.
+    \end{proof}
+
+    Dodatek: přirozeně lze označit jednotlivé uzly stromu unikátními identifikátory tak, že každý uzel stromu bude označen přirozeným číslem získaným vztahem $2^n - 1 + m$, kde $n \in \mathbb{N}$ označuje úroveň uzlu, kdy kořen má úroveň $0$, a $m \in \mathbb{N}$ označuje pořadí uzlu v dané úrovni při dodržení číslování od $0$.
+
+    \item
+
+    \begin{theorem}
+        Nechť \textit{obarvení stromu} $T$ je funkce, která přiřazuje každému vrcholu $v \in V$ barvu $c(v) \in \{red, black\}$. Pak množina všech obarvení stromu $T$ je nespočetně nekonečná.
+    \end{theorem}
+    \begin{proof}
+        Důkaz bude proveden pomocí diagonalizace. Obarvení stromu je dále označované jako $g$ a množina všech obarvení stromu $T$ jako $S$. Předpokládejme, že množina $S$ je spočetná. Podle definice spočetnosti poté musí existovat bijekce $f: \mathbb{N} \longleftrightarrow S$.
+        
+        Uspořádejme vrcholy stromu do posloupnosti, kterou lze vytvořit konstatováním, že jednotlivé vrcholy, $v_i \in V$, kde $i = 0, 1, 2, ...$, jsou označeny způsobem uvedeným v~podúkolu \ref{enum:1}. Takto vytvořená posloupnost bude značena jako $v_0, v_1, v_2, ...$ vzestupně dle značení vrcholů. Dále bude využívána posloupnost $g_0, g_1, g_2, ...$ zahrnující všechna obarvení stromu. Potom $f$ může být zobrazena nekonečnou maticí:
+
+        $$
+            \begin{matrix}
+                                & \boldsymbol{v_0} & \boldsymbol{v_1} & \boldsymbol{v_2} & \boldsymbol{...} & \boldsymbol{v_i} & \boldsymbol{...}&\\
+            \boldsymbol{g_0 = f(0)} & \textcolor{blue}{a_{00}} & a_{01} & a_{02} & ... & a_{0i} & ...&\\
+            \boldsymbol{g_1 = f(1)} & a_{10} & \textcolor{blue}{a_{11}} & a_{12} & ... & a_{1i} & ...&\\
+            \boldsymbol{g_2 = f(2)} & a_{20} & a_{21} & \textcolor{blue}{a_{22}} & ... & a_{2i} & ...&\\
+            \boldsymbol{...}        & ...    & ...    & ...    & ... & ...    & ...&,\\
+            \end{matrix}
+        $$
+        \noindent
+        kde
+
+        $$
+        a_{ij} =
+        \begin{cases}
+        0, & \text{jestliže } g_i(v_j) = black,\\
+        1, & \text{jestliže } g_i(v_j) = red.\\
+        \end{cases}
+        $$
+
+        Uvažujme obarvení stromu $h$ takové, pro které platí, že pokud $a_{ii} = 0$, pak $h(v_i) = red$, jinak $h(v_i) = black$. Obarvení stromu $h$ se liší od každého obarvení stromu $g_i = f(i)$, kde~$i \in \mathbb{N}$, tak, že pokud barva $c(v_i)$ pro $g_i$ je černá barva ($a_{ii} = 0$), pak pro $h$ je stejný uzel~($v_i$) označen červenou barvou a naopak. Současně ovšem $h \in S$, tudíž $f$ není surjektivní a docházíme ke sporu.
+    \end{proof}
+\end{enumerate}
+
+\section{Příklad 4}
+Navrhněte algoritmus, který pro bezkontextovou gramatiku $G = (N, \Sigma, P, S)$ a symbol $a \in \Sigma$ spočítá množinu
+
+$${}_{a}N_{a} = \{A \in N \, | \, \exists w \in \Sigma^\ast: A \Rightarrow^+_G w \wedge \exists u \in \Sigma^\ast: w = aua\}.$$
+
+V algoritmu můžete využít množinu $N_\epsilon = \{A \in N \, | \, A \Rightarrow^+_G \epsilon\}$. Doporučujeme nadefinovat si další vhodné množiny neterminálů a algoritmicky popsat jejich výpočet (u $N_\epsilon$ popis výpočtu není potřeba).
+
+Ilustrijte použití algoritmu na příkladě gramatiky s pravidly
+
+\begin{align*}
+    &S \rightarrow aWU \, | \, UWa \\
+    &W \rightarrow YacU \, | \, Xa  \\ 
+    &Y \rightarrow X \, | \, \epsilon \\
+    &X \rightarrow aXa \\
+    &U \rightarrow bcaYY \, | \, Ucb \\
+\end{align*}
+
+\subsection{Řešení}
+Množina ${}_{a}N_{a}$ obsahuje neterminály, ze kterých lze derivovat řetězce terminálů takové, že jejich první a poslední symbol (prefix a sufix o délce $1$) je symbol $a$. Zároveň platí, že minimální délka takových řetězců je $2$.
+
+Nejdříve spočítáme množinu neterminálů
+
+$$N_t = \{A \in N \, | \, A \Rightarrow^+ w \wedge w \in \Sigma^\ast\}.$$
+
+\noindent
+Taková množina obsahuje neterminály, které vygenerují alespoň jeden řetězec neterminálů, včetně prázdného řetězce. $N_t$ lze vypočítat pomocí následujícího fix-point algoritmu:
+
+\begin{align*}
+    &1. \; N_t^0 := \emptyset, i := 0, \\
+    &2. \; N_t^{i+1} := \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t^i)^\ast\}, \\
+    &3. \; \text{Pokud } N_t^{i+1} = N_t^i \text{, potom } N_t := N_t^i \text{, jinak } i := i+1 \text{ a \texttt{goto} bod 2}.
+\end{align*}
+
+Dále bude v algoritmu využívána poskytnutá množina
+
+$$N_{\varepsilon} = \{A \in N \, | \, A \Rightarrow_G^+ \varepsilon\},$$
+
+\noindent
+která obsahuje neterminály, jenž vygenerují alespoň jeden řetězec, který je prázdým řetězcem. Tuto množinu lze vytvořit pomocí fix point algoritmu:
+
+\begin{align*}
+    &1. \; N_\varepsilon^0 := \emptyset, i := 0, \\
+    &2. \; N_\varepsilon^{i+1} := \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_\varepsilon^i)^\ast\}, \\
+    &3. \; \text{Pokud } N_\varepsilon^{i+1} = N_\varepsilon^i \text{, potom } N_\varepsilon := N_t^\varepsilon \text{, jinak } i := i+1 \text{ a \texttt{goto} bod 2}.
+\end{align*}
+
+Nakonec bude zapotřebí zkonstruovat ještě dvě množiny. První z nich je množina
+
+$${}_{a}N = \{A \in N \, | \, \exists w, u \in \Sigma^\ast : A \Rightarrow_G^+ w \wedge  w = au\},$$
+
+\noindent
+kde $a \in \Sigma$. Množina ${}_{a}N$ obsahuje všechny neterminály, které vygenerují alespoň jeden řetězec terminálů takový, který začíná symbolem $a$ (prefix o délce $1$ je roven řetězci $a$). ${}_{a}N$ lze vypočítat pomocí následujícího fix-point algoritmu:
+
+\begin{align*}
+    &1. \; {}_{a}N^0 := \emptyset, i := 0, \\
+    &2. \; {}_{a}N^{i+1} := \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_{\varepsilon})^\ast(\{a\} \cup N_a^i)(\Sigma \cup N_t)^\ast\}, \\
+    &3. \; \text{Pokud } {}_{a}N^{i+1} = {}_{a}N^i \text{, potom } {}_{a}N := {}_{a}N^i \text{, jinak } i := i+1 \text{ a \texttt{goto} bod 2}.
+\end{align*}
+
+Druhou z množin bude množina
+
+$$N_a = \{A \in N \, | \, \exists w, u \in \Sigma^\ast : A \Rightarrow_G^+ w \wedge  w = ua\},$$
+
+\noindent
+kde $a \in \Sigma$. Podobně jako množina ${}_{a}N$, množina $N_a$ obsahuje všechny neterminály, které vygenerují alespoň jeden řetězec terminálů takový, který naopak končí symbolem $a$ (sufix o délce $1$ je roven řetězci $a$). $N_a$ lze vypočítat pomocí fix-point algoritmu:
+
+\begin{align*}
+    &1. \; N_a^0 := \emptyset, i := 0, \\
+    &2. \; N_a^{i+1} := \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t)^\ast(\{a\} \cup N_a^i)(N_{\varepsilon})^\ast\}, \\
+    &3. \; \text{Pokud } N_a^{i+1} = N_a^i \text{, potom } N_a := N_a^i \text{, jinak } i := i+1 \text{ a \texttt{goto} bod 2}.
+\end{align*}
+
+Poté výslednou množinu ${}_{a}N_{a}$ lze sestrojit pomocí fix-point algoritmu:
+
+\begin{align*}
+    &1. \; {}_{a}N_{a} := \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_{\varepsilon})^\ast(\{a\} \cup {}_{a}N)(\Sigma \cup N_t)^\ast(\{a\} \cup N_a)(N_{\varepsilon})^\ast\}, i := 0, \\
+    &2. \; {}_{a}N_{a}^{i+1} := \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_{\varepsilon})^\ast{}_{a}N_{a}^i(N_{\varepsilon})^\ast\} \cup {}_{a}N_{a}^i, \\
+    &3. \; \text{Pokud } {}_{a}N_{a}^{i+1} = {}_{a}N_{a}^i \text{, potom } {}_{a}N_{a} := {}_{a}N_{a}^i \text{, jinak } i := i+1 \text{ a \texttt{goto} bod 2}.
+\end{align*}
+
+Následně bude demonstrována validnost algoritmu na zadané gramatice.
+
+\begin{example}
+    Uvažujme bezkontextovou gramatiku $G = (N, \Sigma, P, S)$ s pravidly
+
+    \begin{align*}
+    &S \rightarrow aWU \, | \, UWa, \\
+    &W \rightarrow YacU \, | \, Xa,  \\ 
+    &Y \rightarrow X \, | \, \epsilon, \\
+    &X \rightarrow aXa, \\
+    &U \rightarrow bcaYY \, | \, Ucb. \\
+    \end{align*}
+
+Na této gramatice bude demonstrována funkcionalita navrženého algoritmu. Nejprve dle návrhu algoritmu bude vypočítána množina $N_t$ pomocí vytvořeného fix-point algoritmu:
+
+\begin{align*}
+    N_t^0 &= \emptyset,\\
+    N_t^1 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t^0)^\ast\} = \\
+          &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup \emptyset)^\ast\} = \\
+          &= \{Y\}, \\
+    N_t^2 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t^1)^\ast\} = \\
+          &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup \{Y\})^\ast\} = \\
+          &= \{U, Y\}, \\
+    N_t^3 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t^2)^\ast\} = \\
+          &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup \{U, Y\})^\ast\} = \\
+          &= \{U, W, Y\}, \\
+    N_t^4 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t^3)^\ast\} = \\
+          &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup \{U, W, Y\})^\ast\} = \\
+          &= \{S, U, W, Y\} = N_t^5 = N_t. \\          
+\end{align*}
+
+Následně množina $N_\varepsilon$:
+
+\begin{align*}
+    N_\varepsilon^0 &= \emptyset,\\
+    N_\varepsilon^1 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_\varepsilon^0)^\ast\} = \\
+                    &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in \emptyset^\ast\} = \\
+                    &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in \{\varepsilon\}\} = \\
+                    &= \{Y\} = N_\varepsilon^2 = N_\varepsilon. \\
+\end{align*}
+
+Poté budou určeny obě pomocné množiny, ${}_{a}N$ a $N_a$, následovně:
+
+\begin{align*}
+    {}_{a}N^0 &= \emptyset,\\
+    {}_{a}N^1 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_{\varepsilon})^\ast(\{a\} \cup N_a^0)(\Sigma \cup N_t)^\ast\} = \\
+              &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_{\varepsilon})^\ast(\{a\} \cup \emptyset)(\Sigma \cup N_t)^\ast\} = \\
+              &= \{S, W\} = {}_{a}N^2 = {}_{a}N. \\
+\end{align*}
+
+\begin{align*}
+    N_a^0 &= \emptyset,\\
+    N_a^1 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t)^\ast(\{a\} \cup N_a^0)(N_{\varepsilon})^\ast\} = \\
+          &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t)^\ast(\{a\} \cup \emptyset)(N_{\varepsilon})^\ast\} = \\          
+          &= \{S, U\}. \\
+    N_a^2 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t)^\ast(\{a\} \cup N_a^1)(N_{\varepsilon})^\ast\} = \\
+    &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (\Sigma \cup N_t)^\ast(\{a\} \cup \{S, U\})(N_{\varepsilon})^\ast\} = \\
+    &= \{S, U, W\} = N_a^3 = N_a. \\
+\end{align*}
+
+Výsledná množina, ${}_{a}N_{a}$, bude sestavena pomocí s využitím sestaveného fix-point algoritmu:
+
+\begin{align*}
+    {}_{a}N_{a}^0 &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_{\varepsilon})^\ast(\{a\} \cup {}_{a}N)(\Sigma \cup N_t)^\ast(\{a\} \cup N_a)(N_{\varepsilon})^\ast\} = \\
+                  &= \{S, W\}, \\
+    {}_{a}N_{a}^{1} &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_{\varepsilon})^\ast{}_{a}N_{a}^0(N_{\varepsilon})^\ast\} \cup {}_{a}N_{a}^0 =  \\
+                    &= \{A \in N \, | \, \exists (A \rightarrow \alpha) \in P \wedge \alpha \in (N_{\varepsilon})^\ast\{S, W\}(N_{\varepsilon})^\ast\} \cup \{S, W\} =  \\
+                    &= \emptyset \cup \{S, W\} = \{S, W\}, \\
+    {}_{a}N_{a}^0 &= {}_{a}N_{a}^1 = {}_{a}N_{a}. \\
+\end{align*}
+
+Zadané gramatice $G$ přísluší množina ${}_{a}N_{a} = \{S, W\}$.
+\end{example}
+
+\newpage
+
+\bibliographystyle{czechiso}
+\renewcommand{\refname}{Použitá literatura}
+\bibliography{main}
+
+\end{document}
