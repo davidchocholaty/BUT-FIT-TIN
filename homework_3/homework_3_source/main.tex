@@ -1,0 +1,625 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage[left=2cm, top=3cm, text={17cm, 24cm}]{geometry}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[unicode, colorlinks, hypertexnames=false, citecolor=red]{hyperref}
+\usepackage{tabto}
+\usepackage{placeins}
+\hypersetup{colorlinks = true, hypertexnames = false}
+\usepackage{pdflscape}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{automata, arrows.meta, positioning,shapes}
+\usepackage{pdflscape}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+%k-COLORING
+\newcommand\kcoloring{\mathop{\mbox{$k$-$\mathit{COLORING}$}}}
+\newcommand\lp{\mathop{\mbox{$\mathit{LP}$}}}
+
+\renewcommand{\labelenumi}{\alph{enumi})}
+
+\setlength\parindent{0pt}
+
+\usepackage{fancyvrb}
+
+% [David Chocholatý]: pro definice, teorémy, ....
+\usepackage{amsthm}
+% - Definice.
+\theoremstyle{definition}
+\newtheorem{definition}{Definice}[section]
+
+% - Teorém.
+\theoremstyle{definition}
+\newtheorem{theorem}{Teorém}[section]
+
+% - Lemma.
+\theoremstyle{definition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+% - Příklad.
+\theoremstyle{remark}
+\newtheorem{example}{Příklad}[section]
+
+\theoremstyle{remark}
+\newtheorem*{basis}{Bázový případ}
+
+\theoremstyle{remark}
+\newtheorem*{inductionhypothesis}{Indukční předpoklad}
+
+\theoremstyle{remark}
+\newtheorem*{inductionstep}{Indukční krok}
+
+\setlength{\parindent}{20pt}
+
+% redefine \VerbatimInput
+\RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}%
+{fontsize=\footnotesize,
+ %
+ frame=lines,  % top and bottom rule only
+ framesep=2em, % separation between frame and text
+ rulecolor=\color{gray},
+ %
+ label=\fbox{\color{black}udpData.txt},
+ labelposition=topline,
+ %
+ %commandchars=\|\(\), % escape character and argument delimiters for
+                      % commands within the verbatim
+ %commentchar=*        % comment character
+}
+
+\lstdefinestyle{BashInputStyle}{
+  language=bash,
+  basicstyle=\small\sffamily,
+  %numbers=left,
+  %numberstyle=\scriptsize,
+  %numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{cyan!5},
+  linewidth=0.9\linewidth,
+  %xleftmargin=0.1\linewidth
+}
+
+\newcommand*{\Package}[1]{\texttt{#1}}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{CLanguage}{
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate={á}{{\'a}}1 {ú}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1   {ý}{{\'y}}1 {č}{{\v{c}}}1 {ť}{{\'t}}1 {ľ}{{\'l}}1 
+}
+
+\begin{document}
+
+    %Titulni strana
+    \begin{titlepage}
+        \begin{center}
+            \includegraphics[width=0.87\textwidth]{logo_cz.png}
+            \vspace*{6cm}
+
+            \Huge{\textbf{Teoretická informatika 2023/2024}}
+            \vspace{0.5cm}
+            
+            \LARGE{Úkol 3}
+            \vspace{1cm}
+            
+            \Large{David Chocholatý (xchoch09)}
+            
+           \vfill
+		   \begin{flushright} 
+		   Brno, \today
+		   \end{flushright}
+        \end{center}
+    \end{titlepage}
+
+\pagestyle{fancy}
+\lhead{\bfseries Teoretická informatika 2023/2024 --- Úkol 3}
+\rhead{\bfseries xchoch09}
+
+\section{Příklad 1}
+Sestavení zasedacího pořádku na Lenčině svatbě komplikují požadavky hostů na to, kdo s kým chce a nechce sedět. Dokažte, že Lenčin problém sestavení zasedacího pořádku ($\lp$), definovaný následujícím způsobem, je \textbf{NP}-úplný: Mějme množinu hostů $H$, dvě ireflexivní binární relace \textit{musí sedět s}, $M$, a \textit{nechce sedět s}, $N$, na $H$, počet $S \in \mathbb{N}$ stolů, a velikostí $V \in \mathbb{N}$ stolů (počet míst u stolu). Je možné usadit všechny hosty k $S$ stolům tak, aby u každého sedělo maximálně $V$ hostů, aby každý seděl s těmi, s nimiž sedět musí, a zároveň neseděl s těmi, s nimiž sedět nechce?
+
+\vspace{0.25cm}
+
+\noindent
+{\footnotesize (Pozn: Pomůže Vám NP-úplnost některého z problémů uvedených zde: \\
+\url{https://en.wikipedia.org/wiki/NP-completeness#NP-complete_problems} \\
+v odstavci \textit{„NP-complete problems“}.)}
+
+\subsection{Řešení}
+
+\begin{lemma}
+    \label{np}
+    Nechť $\lp$ značí problém specifikovaný dle zadání. Platí, že $\lp \in \textbf{NP}$.
+\end{lemma}
+
+\begin{proof}
+    Nechť NTS značí \textit{nedeterministický Turingův stroj}. Dále bude ukázáno, že $\lp \in \textbf{NP}$. 
+    
+    Bude sestrojen NTS $M$ pracující v polynomiálním čase takový, že $L(M) = \lp$. NTS $M$ nedeterministicky zvolí rozesazení $H$ hostů u nejvýše $S \in \mathbb{N}$ stolů na maximálně $V \in \mathbb{N}$ místech u stolu. Následně $M$ vyhodnotí správnost rozesazení vůči ireflexivní binární relaci $M$ a poté i $N$, přičemž v obou případech se jedná o lineární průchod seznamem (je uvažován průchod přes všechny dvojice relace jako přes uspořádaný seznam). Při uchování informací o počtu doposud obsazených stolů a míst u stolu, v průběhu zpracování seznamů, na dalších páskách $M$, je po projití uvedených seznamů možné jednoduchým porovnáním ověřit, zda byly dodrženy maximální příslušné počty.
+    
+    Pokud se jedná o správné rozesazení hostů, tak $M$ akceptuje. V opačném případě zamítá. Složitost $M$ je tedy v $\mathcal{O}(n)$. Bylo tedy ukázáno, že pro $\lp$ existuje polynomiální verifikátor.
+\end{proof}
+
+\begin{lemma}
+    \label{np-hard}
+    Nechť $\lp$ značí problém specifikovaný dle zadání. Problém $\lp$ je \textbf{NP}-těžký.
+\end{lemma}
+
+\begin{proof}
+    Důkaz bude proveden \textit{polynomiální redukcí} ze známého grafového problému pojmenovaného jako \textit{k-coloring}\footnote{\url{https://en.wikipedia.org/wiki/Graph_coloring\#Vertex_coloring}}. Notace daného problému bude dále uváděna jako $\kcoloring$, jenž je definován jako 
+    
+    $$\kcoloring = \{\langle G\rangle\#\langle k\rangle \; | \; \text{neorientovaný graf } G \text{ je obarvitelný nejvýše } k \text{ barvami}\},$$
+
+    \noindent
+    kde graf $G = (V, E)$ má \textit{chromatické číslo} $c \leq k$, pokud existuje funkce obarvení $f: V \rightarrow \{1, ..., c\}$ taková, že pro každé dva sousední uzly platí, že \textit{nejsou} obarveny stejnou barvou, tj.
+    
+    $$\forall \{v_1, v_2\} \in E: f(v_1) \neq f(v_2).$$
+
+    Bude ukázáno, že
+
+    $$\kcoloring \leq_P \lp.$$
+
+    \noindent
+    Zkonstruujeme polynomiálně vyčíslitelnou funkci $f$, pro kterou platí
+
+    $$A \in \kcoloring \iff f(A) \in \lp.$$
+
+    Funkce $f$ vytvoří z grafu $G = (V, E)$ a přirozeného čísla $k$ instanci problému $\lp$, a to takovou, že neorientovaný graf $G$ je obarvitelný nejvýše $k$ barvami tehdy a jen tehdy, když pro instanci problému $LP$ existuje rozesazení takové, že u jednoho stolu spolu nebudou sedět ti hosté, kteří spolu \textit{nechtějí sedět}, přičemž nejvýše mohou být daní hosté rozesazeni u $S \in \mathbb{N}$ stolů. \textit{Vrcholy} grafu $G$ z konečné množiny vrcholů $V$ odpovídají \textit{hostům} z množiny hostů $H$. \textit{Hrany} grafu $G$ z množiny hran $E$ odpovídají jednotlivým dvojicím ireflexivní binární relace \textit{nechce sedět s}, $N$, na $H$. Přirozené číslo $k$ odpovídá počtu stolů $S$.
+
+    \begin{itemize}
+        \item $\Rightarrow$:
+
+        Předpokládejme, že graf $G = (V, E)$ je obarvitelný nejvýše $k$ barvami. Potom pro graf $G$ existuje alespoň jedno obarvení vrcholů nejvýše $k$ barvami takové, že žádné dva sousední vrcholy nejsou obarveny stejnou barvou. Zároveň existuje alespoň jedno správné rozesazení takové, že každé dva hosty, kteří spolu nechtějí sedět, je možné rozesadit k nejvýše $S$ stolům tak, že u jednoho stolu spolu nebudou sedět hosté, kteří spolu nechtějí sedět.
+        
+        \item $\Leftarrow$:
+        
+        Předpokládejme, že hosté, kteří spolu nechtějí sedět, nesedí u stejného stolu, přičemž jsou rozesazeni nejvýše u $S$ stolů. Jelikož každá dvojice hostů patřící do relace $N$, která spolu nechce sedět, sedí u jiného stolu (každý host z dané dvojice sedí u jiného stolu), musí být vrcholy odpovídající dvojice sousedních vrcholů grafu $G$ obarveny rozdílnou barvou (přičemž jednotlivé barvy odpovídají příslušným stolům), a to nejvýše $k$ barvami.
+    \end{itemize}
+    
+\end{proof}
+
+\begin{theorem}
+    Nechť $\lp$ značí problém specifikovaný dle zadání. Platí, že problém $\lp$ je \textbf{NP}-úplný.
+\end{theorem}
+
+\begin{proof}
+    Na základě lemmatu \ref{np} bylo dokázáno, že $\lp \in \textbf{NP}$. Současně s lemmatem \ref{np-hard}, které dokazuje, že problém $\lp$ je \textbf{NP}-těžký, vyplývá, že problém $\lp$ je \textbf{NP}-úplný.
+\end{proof}
+
+\section{Příklad 2}
+Uvažujme sekvenci $n$ operací {\fontfamily{cmss}\selectfont vlož\_a\_uřež}($k$), $k \in \mathbb{N}$, provedenou nad oboustranně vázaném lineárním seznamem čísel, který je iniciálně prázdný.
+
+\vspace{0.25cm}
+
+\noindent
+Operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež}($k$) vloží nový prvek s hodnotou $k$ do seznamu na takovou pozici, před kterou jsou pouze prvky s menší hodnotou než $k$, a za kterou nejsou prvky s menší hodnotou než $k$. Následně vypíše a smaže všechny prvky seznamu za vloženým prvkem.
+
+\vspace{0.25cm}
+
+\noindent
+Navrhněte, jak implementovat {\fontfamily{cmss}\selectfont vlož\_a\_uřež} tak, aby složitost sekvence $n$ operací běžela v čase $\mathcal{O}(n)$. Dokažte, že v sekvenci operací je amortizovaná složitost jedné Vaší operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež} konstantní.
+
+\vspace{0.25cm}
+
+\noindent
+{\footnotesize (Pozn: Operaci {\fontfamily{cmss}\selectfont vlož\_a\_uřež} nepopisujte detailně na úrovni aktualizace ukazatelů, snažte se o jednoduše pochopitelný a jasný popis algoritmu s důrazem na hlavní myšlenku, bez rozebírání technikálií se zřejmým řešením. Předpokládejte, že máte funkce s konstantní časovou složitostí, které vrátí ukazatel na začátek/konec seznamu, pro daný ukazatel na prvek seznamu vloží nový prvek s danou hodnotou před/za tento prvek, smažou a vypíší předchozí/následující prvek, posunou ukazatel na následující/předchozí prvek, atd. Porovnání dvou čísel považujte za operaci s konstantní časovou složitostí. Řešení je jednoduché, není třeba vymýšlet nic kompikovaného, používat další datové struktury apod., je třeba jen chytře využít invariant, který seznam splňuje.)}
+
+\subsection{Řešení}
+Nejprve bude představen algoritmus zadané operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež}($k$), a to algoritmus \ref{algorithm}. Navržený algoritmus využívá funkcí z následujícího výčtu, přičemž se přepokládá, že každá uvedená operace má konstantní časovou složitost:
+
+\begin{itemize}
+    \item $get\_back()$
+
+    Funkce vrátí ukazatel na konec oboustranně vázaného lineárního seznamu. Pokud je seznam prázdný, navrací se $nonce$ (obdoba $NULL$ například z jazyka C).
+    \item $get\_item()$
+
+    Funkce získá hodnotu prvku seznamu, na který ukazuje daný ukazatel.
+    \item $get\_prev()$
+
+    Funkce vrací ukazatel na předchozí prvek daného ukazatele.
+    \item $delete\_after()$
+
+    Funkce provede výpis hodnoty prvku, na který ukazuje daný ukazatel, a následně je tento prvek ze seznamu odstraněn.
+    \item $insert\_after(k)$
+
+    Funkce vloží prvek za prvek seznamu, na který ukazuje daný ukazatel. Pokud je seznam prádný, je prvek do seznamu vložen standardním způsobem.
+\end{itemize}
+
+Dále se předpokládá, že porovnání dvou ukazatelů a dvou celých čísel má opět konstantní časovou složitost.
+
+\begin{algorithm}
+\label{algorithm}
+        \caption{Operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež}($k$)}\label{euclid}
+        \begin{algorithmic}[1]
+        \State \textbf{Input:} Oboustranně vázaný lineární seznam $list$, prvek s hodnotou $k$, $k \in \mathbb{N}$
+        \State \textbf{Output:} $nonce$
+            \Procedure{{\fontfamily{cmss}\selectfont vlož\_a\_uřež}}{$k$}
+            \State$pos \gets list.get\_back()$
+            \While{$pos \neq nonce\ \mathbf{and}\ pos.get\_item() \geq k$}
+                \State $pos.get\_prev()$
+                \State $pos.delete\_after()$
+            \EndWhile
+            \State $pos.insert\_after(k)$\Comment{Při prázdném seznamu prvek vložen standardním způsobem}
+            \State \textbf{return} $nonce$\Comment{Operace nevrací žádnou hodnotu}
+            \EndProcedure
+        \end{algorithmic}
+\end{algorithm}
+
+\begin{theorem}
+    Nechť operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež} je definovaná dle algoritmu \ref{algorithm}. Potom časová složitost sekvence $n$ operací je $\mathcal{O}(n)$ a amortizovaná složitost jedné operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež} je \textit{konstantní}.
+\end{theorem}
+
+\begin{proof}
+    Důkaz bude proveden \textit{metodou účtů} (anglicky \textit{accounting method}).
+    
+    Na základě dané metody bude jednotlivým dílčím operacím operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež} přiřazena jejich cena a kredit. Konkrétní rozdělení zachycuje tabulka \ref{table}.
+
+    \begin{table}[!ht]
+    \begin{center}
+    \begin{tabular}{||c c c||} 
+     \hline
+     Operace & Cena & Kredit \\ [0.5ex] 
+     \hline\hline
+     $list.get\_back()$ & 1 & 4 \\ 
+     \hline
+     $pos \neq nonce$ & 1 & 0 \\
+     \hline
+     $pos.get\_item()$ & 1 & 0 \\
+     \hline
+     $\underline{\hspace{4mm}} item\underline{\hspace{4mm}} \geq k$ & 1 & 0 \\
+     \hline
+     $pos.get\_prev()$ & 1 & 0 \\
+     \hline
+     $pos.delete\_after()$ & 1 & 0 \\
+     \hline
+     $pos.insert\_after(k)$ & 1 & 6 \\ [1ex] 
+     \hline
+    \end{tabular}
+    \caption{\label{table}Cena a kredity jednotlivých dílčích operací operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež}.}
+    \end{center}
+    \end{table}
+
+    Pro každou dílčí operaci se uvažuje konstantní časová složitost. Zároveň některé dílčí operace operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež} nemají přiřazeny žádný kredit, respektive nulový kredit. To jsou takové operace, které jsou vykonávány při provádění jediného cyklu operace.
+    
+    První dílčí operace, $get\_back()$, s nenulovým kreditem má přiřazen kredit s hodnotou $4$, jelikož $1$ kredit je nutný pro vykonání samotné operace a zbylé $3$ kredity pro následné vyhodnocení podmínky cyklu, která bude vyhodnocena při každém volání operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež} (ať již celá nebo jenom její první část). 
+    
+    Dále operace pro vložení prvku, $insert\_after(k)$, dostane kredit s hodnotou $6$, a to z toho důvodu, že $1$ kredit je nutný pro vložení prvku, další $2$ kredity jsou předplaceny pro budoucí získání prvku, jeho výpis a odstranění pomocí dvou funkcí v těle cyklu a zbylé $3$ kredity pro následné vyhodnocení podmínky v další iteraci cyklu po budoucím odstranění konkrétního prvku.
+
+    Platí, že složitost těchto operací $\leq 10$ a tedy amortizovaná složitost jedné operace {\fontfamily{cmss}\selectfont vlož\_a\_uřež} je \textit{konstantní}.
+
+    Vyplývá, že na základě uvedeného rozložení kreditů platí, že počet kreditů na účtě je vždy nezáporný. Celková cena $n$ operací je $\leq 10n$ a tedy časová složitost sekvence $n$ operací je $\mathcal{O}(n)$.
+    
+   
+\end{proof}
+
+\section{Příklad 3}
+Formalizujte Tseytinovu transformaci a dokažte, že vrátí formuli lineární velikosti k velikosti vstupní formule. Konkrétněji:
+
+\begin{itemize}
+    \item Předpokládejte na vstupu pouze formule generované gramatikou $\varphi \rightarrow X \; | \; \neg\varphi \; | \; (\varphi \lor \varphi)$, kde $X$ je z množiny výrokových proměnných $\{A, B, C, ...\}$. Stejně jako na cvičení, velikost $|\varphi|$ formule $\varphi$ je chápána jako délka slova nad abecedou $\{(, ), \neg, \lor\} \cup X$.
+    \item Pro formalizaci Tseytinovy transformace definujte rekurzivní funkci $\texttt{Tse}$($\varphi, i$), která pracuje induktivně ke struktuře formule, a pro formuli $\varphi$ a $i \in \mathbb{N}$ na vstupu vrátí konjunkci klauzulí definujících „pojmenování“ podformulí $\varphi$, kde samotná $\varphi$ je pojmenována proměnnou $X_i$, a její vlastní podformule jsou pojmenovány proměnnými $X_{i+1}, X_{i+2}, ...$. Funkce \texttt{Tse} bude využívat funkci \texttt{CNF}, která převede formuli tvaru $X \leftrightarrow \neg Y$ nebo $X \leftrightarrow (Y \lor Z)$ do CNF klasickým způsobem.
+    \item Lineární velikost výstupní formule dokažte indukcí ke struktuře vstupní formule.
+\end{itemize}
+
+\subsection{Řešení}
+
+\begin{definition}
+    (Tseytinova transformace). Nechť formule $\varphi$ je definována gramatikou $\varphi \rightarrow X \; | \; \neg\varphi \; | \; (\varphi \lor \varphi)$, kde $X$ je z množiny výrokových proměnných $\{A, B, C, ...\}$. Dále nechť $X_{i}, X_{i+1}, X_{i+2}, ...$, kde $i \in \mathbb{N}$, značí nově definované proměnné podformulí $\varphi$ a $\texttt{CNF}$ je funkce, která převede formuli tvaru $X \leftrightarrow \neg Y$ nebo $X \leftrightarrow (Y \lor Z)$ do CNF klasickým způsobem. \textit{Tseytinova transformace} je pak induktivně definována jako rekurzivní funkce následovně:
+
+    \begin{itemize}
+        \item $\texttt{Tse}$($p, i$)$ = p$,
+        \item $\texttt{Tse}$($\neg\varphi, i$) $= 
+            \begin{cases}
+            \texttt{CNF}(X_i \leftrightarrow \neg \varphi), & \text{jestliže } \varphi \in X,\\
+            \texttt{CNF}(X_i \leftrightarrow \neg X_{i+1}) \wedge \texttt{Tse}(\varphi, i + 1), & \text{jestliže } \varphi \not\in X\text{,}\\
+            \end{cases}$
+        \item $\texttt{Tse}$($(\varphi_1 \lor \varphi_2), i$) $= 
+            \begin{cases}
+            \texttt{CNF}(X_i \leftrightarrow (\varphi_1 \lor \varphi_2)), & \text{jestliže } \varphi_1, \varphi_2 \in X,\\
+            \texttt{CNF}(X_i \leftrightarrow (\varphi_1 \lor X_{i+1})) \wedge \texttt{Tse}(\varphi_2, i + 1), & \text{jestliže } \varphi_1 \in X, \varphi_2 \not\in X,\\
+            \texttt{CNF}(X_i \leftrightarrow (X_{i+1} \lor \varphi_2)) \wedge \texttt{Tse}(\varphi_1, i + 1), & \text{jestliže } \varphi_1 \not\in X, \varphi_2 \in X,\\
+            \texttt{CNF}(X_i \leftrightarrow (X_{i+1} \lor X_{n+1})) \\ \ \ \wedge \texttt{Tse}(\varphi_1, i + 1) \wedge \texttt{Tse}(\varphi_2, n + 1), & \text{jestliže } \varphi_1, \varphi_2 \not\in X,\\
+            \end{cases}$
+    \end{itemize}
+
+    \noindent
+     pro $p \in X$ a $n = max_{j\in \mathbb{N}}(j)$, kde $X_{i+1}, X_{i+2}, ..., X_{j}, ..., X_{n}$ jsou nově definované proměnné všech podformulí $\varphi_1$ v $\texttt{Tse}(\varphi_1, i + 1)$. Zároveň po dokončení provedení zpracování všech rekurzivních částí je na začátek výsledné formule $\varphi_{res}$, která je výsledkem funkce $\texttt{Tse}(\varphi_{in}, 1)$ s původní vstupní formulí $\varphi_{in}$, pomocí konjunkce konkatenována samotná proměnná $X_1$ (výsledkem je tedy $X_1 \wedge \varphi_{res}$) tehdy a jen tehdy, když $\varphi_{res} \not\in X$ (výsledná formule není pouze literál). Dále nechť je Tseytinova transformace značena jako $\texttt{Tse}$($\varphi, i$).
+\end{definition}
+
+\begin{theorem}
+    Tseytinova transformace $\texttt{Tse}$($\varphi, i$) formule $\varphi$ s počátečním $i = 1$ roste lineárně vzhledem k $|\varphi|$. Tudíž platí, že $|\texttt{Tse}(\varphi, 1)| = \mathcal{O}(|\varphi|)$.
+\end{theorem}
+
+\begin{proof}
+    Potřebujeme ukázat, že
+
+    $$|\texttt{Tse}(\varphi, i)| \leq C \, |\varphi|$$
+
+    \noindent
+    pro $\varphi$ v dané podobě (velikost $|\varphi|$ formule $\varphi$ je chápána jako délka slova nad abecedou $\{(, ), \neg, \lor\} \cup X$) a pro kladnou konstantu $C \in \mathbb{Z}^+$. Důkaz bude proveden indukcí podle počtu symbolů z $\{(, ), \neg, \lor\}$ vzhledem ke struktuře vstupní formule. Dále nechť je uvažováno $C = 12$.
+
+    \begin{basis}
+    Pro daný případ, kde $p \in X$, platí pro $i \in \mathbb{N}$, že:
+        
+    $$|\texttt{Tse}(p, i)| = |p| \leq 12 \, |p|.$$
+
+    \noindent
+    Bázový případ tedy platí.
+    \end{basis}
+
+    \begin{inductionhypothesis}
+        Předpokládejme, že dané tvrzení platí pro všechny formule $\varphi$ o maximálně $n = k$, $k \geq 0$, počtu symbolů z $\{(, ), \neg, \lor\}$.
+    \end{inductionhypothesis}
+
+    \begin{inductionstep}
+        Ukážeme, že tvrzení platí také pro formule $\varphi$ s $n = k + 1$ počtem symbolů z $\{(, ), \neg, \lor\}$. Protože $n = k + 1$, potom $n \geq 1$.
+        
+        Nechť $p, p_1, p_2 \in X$ a $\varphi_1, \varphi_2$ jsou formule takové, že $\varphi_1, \varphi_2 \not\in X$, přičemž samy obsahují alespoň jeden symbol z $\{(, ), \neg, \lor\}$. Dále nechť $i \in \mathbb{N}$. Nastávají následující případy:    
+
+    \begin{itemize}
+        \item $\texttt{Tse}$($\neg p, i$)
+
+        \begin{align*}
+            \texttt{Tse}(\neg p, i) &\Longleftrightarrow \texttt{CNF}(X_i \leftrightarrow \neg p) \\
+            &\Longleftrightarrow (\neg X_i \lor \neg p) \wedge (p \lor X_i).\\
+        \end{align*}
+
+        \noindent
+        Potom platí, že
+
+        \begin{align*}
+            |\texttt{Tse}(\neg p, i)| &= |(\neg X_i \lor \neg p) \wedge (p \lor X_i)| \\
+            &= |(\neg X_i \lor \neg p)| + |(p \lor X_i)| = 12 \leq 12 |\neg p| = 24. \\
+        \end{align*}
+        
+        \item $\texttt{Tse}$($\neg \varphi, i$)
+
+        Platí, že
+
+        \begin{align*}
+            \texttt{Tse}(\neg \varphi, i) &\Longleftrightarrow \texttt{CNF}(X_i \leftrightarrow \neg X_{i+1}) \wedge \texttt{Tse}(\varphi, i + 1) \\
+            &\Longleftrightarrow (\neg X_i \lor \neg X_{i+1}) \wedge (X_{i+1} \lor X_i) \wedge \texttt{Tse}(\varphi, i + 1). \\
+        \end{align*}
+
+        Potom platí, že
+        
+        \begin{align*}
+            |\texttt{Tse}(\neg \varphi, i)| &= |(\neg X_i \lor \neg X_{i+1}) \wedge (X_{i+1} \lor X_i) \wedge \texttt{Tse}(\varphi, i + 1)| \\
+            &= |(\neg X_i \lor \neg X_{i+1})| + |(X_{i+1} \lor X_i)| + |\texttt{Tse}(\varphi, i + 1)| \\
+            &= 12 + |\texttt{Tse}(\varphi, i + 1)|.\\
+        \end{align*}
+
+        Dle indukčního předpokladu
+
+        \begin{align*}
+            |\texttt{Tse}(\neg \varphi, i)| & = 12 + |\texttt{Tse}(\varphi, i + 1)|\\
+            &= 12 + 12 |\varphi| \leq 12 (|\neg \varphi|) = 12 (|\varphi| + 1). \\
+        \end{align*}
+
+        \item $\texttt{Tse}$($(p_1 \lor p_2), i$)
+
+        \begin{align*}
+            \texttt{Tse}((p_1 \lor p_2), i) &\Longleftrightarrow \texttt{CNF}(X_i \leftrightarrow (p_1 \lor p_2)) \\
+            &\Longleftrightarrow (\neg X_i \lor p_1 \lor p_2) \wedge (\neg p_1 \lor X_i ) \wedge (\neg p_2 \lor X_i). \\
+        \end{align*}
+
+        \noindent
+        Potom platí, že
+
+        \begin{align*}
+            |\texttt{Tse}((p_1 \lor p_2), i)| &= |(\neg X_i \lor p_1 \lor p_2) \wedge (\neg p_1 \lor X_i ) \wedge (\neg p_2 \lor X_i)| \\
+            &= |(\neg X_i \lor p_1 \lor p_2)| + |(\neg p_1 \lor X_i )| + |(\neg p_2 \lor X_i)| \\
+            &= 20 \leq 12 |(p_1 \lor p_2)| = 60.\\
+        \end{align*}
+
+        \item $\texttt{Tse}$($(p_1 \lor \varphi_2), i$)
+
+        Platí, že
+
+        \begin{align*}
+            \texttt{Tse}((p_1 \lor \varphi_2), i) \Longleftrightarrow &\texttt{CNF}(X_i \leftrightarrow (p_1 \lor X_{n+1})) \wedge \texttt{Tse}(\varphi_2, n + 1) \\
+            \Longleftrightarrow &(\neg X_i \lor p_1 \lor X_{n+1}) \wedge (\neg p_1 \lor X_i) \wedge (\neg X_{n+1} \lor X_i) \wedge \texttt{Tse}(\varphi_2, n + 1). \\
+        \end{align*}
+
+        
+
+        Potom platí, že
+
+        \begin{align*}
+            |\texttt{Tse}((p_1 \lor \varphi_2), i)| = &|(\neg X_i \lor p_1 \lor X_{n+1}) \wedge (\neg p_1 \lor X_i) \wedge (\neg X_{n+1} \lor X_i) \wedge \texttt{Tse}(\varphi_2, n + 1)| \\
+            = & |(\neg X_i \lor p_1 \lor X_{n+1})| + |(\neg p_1 \lor X_i)| + |(\neg X_{n+1} \lor X_i)| \\
+            &+ |\texttt{Tse}(\varphi_2, n + 1)| \\
+            = &20 + |\texttt{Tse}(\varphi_2, n + 1)|. \\
+        \end{align*}
+
+        Dle indukčního předpokladu
+
+        \begin{align*}
+            |\texttt{Tse}((p_1 \lor \varphi_2), i)| = &20 + |\texttt{Tse}(\varphi_2, n + 1)|\\
+            = &20 + 12 |\varphi_2| \leq 12 |(p_1 \lor \varphi_2)| = 12 (|\varphi_2| + 4).\\
+        \end{align*}
+
+        \item $\texttt{Tse}$($(\varphi_1 \lor p_2), i$)
+
+        Platí, že
+
+        \begin{align*}
+            \texttt{Tse}((\varphi_1 \lor p_2) \Longleftrightarrow &\texttt{CNF}(X_i \leftrightarrow (X_{i+1} \lor p_2)) \wedge \texttt{Tse}(\varphi_1, i + 1) \\
+            \Longleftrightarrow &(\neg X_i \lor X_{i+1} \lor p_2) \wedge (\neg X_{i+1} \lor X_i) \wedge (\neg p_2 \lor X_i) \wedge \texttt{Tse}(\varphi_1, i + 1). \\
+        \end{align*}
+
+        
+
+        Potom platí, že
+
+        \begin{align*}
+            |\texttt{Tse}((\varphi_1 \lor p_2), i)| = &|(\neg X_i \lor X_{i+1} \lor p_2) \wedge (\neg X_{i+1} \lor X_i) \wedge (\neg p_2 \lor X_i) \wedge \texttt{Tse}(\varphi_1, i + 1)| \\
+            = & |(\neg X_i \lor X_{i+1} \lor p_2)| + |(\neg X_{i+1} \lor X_i)| + |(\neg p_2 \lor X_i)| \\
+            &+ |\texttt{Tse}(\varphi_1, i + 1)| \\
+            = &20 + |\texttt{Tse}(\varphi_1, i + 1)|. \\
+        \end{align*}
+
+        Dle indukčního předpokladu
+
+        \begin{align*}
+            |\texttt{Tse}((\varphi_1 \lor p_2), i)| = &20 + |\texttt{Tse}(\varphi_1, i + 1)| \\
+            = &20 + 12|\varphi_1| \leq 12 |(\varphi_1 \lor p_2)| = 12(|\varphi_1| + 4). \\
+        \end{align*}
+        
+        \item $\texttt{Tse}$($(\varphi_1 \lor \varphi_2), i$)
+
+        Platí, že
+
+        \begin{align*}
+            \texttt{Tse}((\varphi_1 \lor \varphi_2), i) \Longleftrightarrow &\texttt{CNF}(X_i \leftrightarrow (X_{i+1} \lor X_{n+1})) \wedge \texttt{Tse}(\varphi_1, i + 1) \wedge \texttt{Tse}(\varphi_2, n + 1) \\
+            \Longleftrightarrow &(\neg X_i \lor X_{i+1} \lor X_{n+1}) \wedge (\neg X_{i+1} \lor X_i) \wedge (\neg X_{n+1} \lor X_i) \\
+            &\wedge \texttt{Tse}(\varphi_1, i + 1) \wedge \texttt{Tse}(\varphi_2, n + 1). \\
+        \end{align*}
+
+        
+
+        Potom platí, že
+
+        \begin{align*}
+            |\texttt{Tse}((\varphi_1 \lor \varphi_2), i)| = &|(\neg X_i \lor X_{i+1} \lor X_{n+1}) \wedge (\neg X_{i+1} \lor X_i) \wedge (\neg X_{n+1} \lor X_i)| \\
+            &+ |\wedge \texttt{Tse}(\varphi_1, i + 1) \wedge \texttt{Tse}(\varphi_2, n + 1)| \\
+            = &|(\neg X_i \lor X_{i+1} \lor X_{n+1})| + |(\neg X_{i+1} \lor X_i)| + |(\neg X_{n+1} \lor X_i)| \\
+            &+ |\texttt{Tse}(\varphi_1, i + 1)| + |\texttt{Tse}(\varphi_2, n + 1)| \\
+            = & 20 + |\texttt{Tse}(\varphi_1, i + 1)| + |\texttt{Tse}(\varphi_2, n + 1)|. \\
+        \end{align*}
+
+        Dle indukčního předpokladu
+
+        \begin{align*}
+            |\texttt{Tse}((\varphi_1 \lor \varphi_2), i)| = &20 + |\texttt{Tse}(\varphi_1, i + 1)| + |\texttt{Tse}(\varphi_2, n + 1)| \\
+            = &20 + 12 |\varphi_1| + 12|\varphi_2| \leq 12 |(\varphi_1 \lor \varphi_2)| = 12(|\varphi_1| + |\varphi_2| + 3). \\
+        \end{align*}
+    \end{itemize}
+    \end{inductionstep}
+
+    Teorém platí také pro $k + 1$. Tudíž teorém platí.
+\end{proof}
+
+\section{Příklad 4}
+Mějme prvořádovou teorii $T_\mathsf{C}$ s jazykem, jehož signatura obsahuje binární funkční symbol $\mathsf{C}$. $T_\mathsf{C}$ definuje význam $\mathsf{C}$ jako funkci $\mathbb{N}$ takovou, že pro všechna $i, j \in \mathbb{N}$,
+
+$$\mathsf{C}(i, j) = \mathsf{to\_num}(\mathsf{to\_num}^{-1}(i).\mathsf{to\_num}^{-1}(j)),$$
+
+\noindent
+kde '.' je konkatenace řetězců a $\mathsf{to\_num}$ je bijektivní funkce z řetězců nad abecedou jazyka $T_\mathsf{C}$ do $\mathbb{N}$. Můžete předpokládat, že jazyk $T_\mathsf{C}$ má číslovky, tedy každé číslo $n \in \mathbb{N}$ je vyjádřeno nějakým termem jazyka.
+
+Aplikací Tarského věty o nevyjádřitelnosti množiny pravdivých výroků dokažte, že pro Vámi zvolené Gödelovo kódování $G$, množina Gödelových čísel důsledků $T_\mathsf{C}$, tedy
+
+$$\{G(\varphi) \; | \; \varphi \text{ je věta jazyka } T_\mathsf{C} \text{ a } T_\mathsf{C} \models \varphi\},$$
+
+\noindent
+nemůže být vyjádřitelná v teorii $T_\mathsf{C}$.
+
+\vspace{0.25cm}
+
+\noindent
+{\footnotesize (Pozn: Je třeba si jen uvědomit, co je co. Instanciovat správně abstraktní formální systém, zvolit Gödelovo kódování, a ukázat, že platí předpoklady Tarského věty, je potom jednoduché.)}
+
+\subsection{Řešení}
+
+\begin{theorem}
+    Nechť $T_\mathsf{C}$ značí zadanou prvořádovou teorii. Potom množina Gödelových čísel důsledků $T_\mathsf{C}$,
+
+    $$\{G(\varphi) \; | \; \varphi \text{ je věta jazyka } T_\mathsf{C} \text{ a } T_\mathsf{C} \models \varphi\},$$
+
+    \noindent
+    nemůže být vyjádřitelná v teorii $T_\mathsf{C}$.
+\end{theorem}
+
+\begin{proof}
+    Pro aplikaci důkazu pomocí \textit{Tarského} věty bude nejprve nutné ověřit, zda teorie $T_\mathsf{C}$ splňuje následující dva body:
+
+    \begin{itemize}
+        \item \textit{G1}: $A^\ast$ je vyjádřitelná pro každou vyjádřitelnou $A$,
+        \item \textit{G2}: $\tilde{A}$ je vyjádřitelná pro každou vyjádřitelnou $A$,
+    \end{itemize}
+
+    \noindent
+    kde $A = \{n \in \mathbb{N} \; | \; H(n)  \text{ je věta jazyka } T_\mathsf{C} \text{ a } T_\mathsf{C} \models H(n)\}$, přičemž $H(n)$ značí větu, kde $H \in \mathcal{H}$ a $n \in \mathbb{N}$ pro množinu predikátů abstraktního formálního systému, $\mathcal{H}$.
+
+    Splnění \textit{G2} je snadné, jelikož v predikátové logice lze aplikovat negaci. Následně bude ověřeno splnění \textit{G1}. Zvolme Gödelovo kódování dle tabulky \ref{tablecode}.
+
+    \begin{table}[!ht]
+    \begin{center}
+    \begin{tabular}{ c|c c c c c c c c c c c c c c c c c c c c c }
+     symbol &  $\forall$ & $\neg$ & $\rightarrow$ & $($ & $)$ & $v$ & $ ^\prime$ & $=$ & $\leq$ & $\#$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\ 
+     kód & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 \\ 
+    \end{tabular}
+    \caption{\label{tablecode} Tabulka Gödelova kódování pro prvořádovou teorii $T_\mathsf{C}$, kde $v^\prime, v^{\prime\prime}, v^{\prime\prime\prime}, ...$ značí jména proměnných a symbol $\#$ slouží jako oddělovač formulí v důkazech.}
+    \end{center}
+    \end{table}
+
+    \newpage
+
+    Slovo $w = a_0 ... a_n \in \mathbb{N}^\ast$ je zápisem Gödelova čísla
+
+    $$G(w) = \mathsf{C}(a_0, \mathsf{C}(a_1, \mathsf{C}(... ,\mathsf{C}(a_{n-1}, a_n)))).$$
+
+    Dále bude ukázáno, že pro vyjádřitelnou $A \in \mathbb{N}$ je $A^\ast = \{n \in \mathbb{N} \; | \; G(E_n(n)) \in A\}$ také vyjádřitelná.
+
+    Konkatenace je vyjádřitelná, jelikož $G(u.v) = \mathsf{C}(u, v)$, značeno $G(u) \circ G(v)$. Pro číslo $\overline{n}$ je kód $n$ získán jako $G(\overline{n}) = \mathsf{C}(1, \overline{n})$. $G(E_e(n))$ je vyjádřitelné na základě $e$ a $n$. Pokud $E_e$ má volnou proměnnou $v$, $E_e(n)$ je ekvivalentní $\forall v (v = \overline{n} \rightarrow E_e)$. $G(E_n(n))$ lze tedy vyjádřit jako
+
+    $$G(E_e(n)) = k \circ \mathsf{C}(1, \overline{n}) \circ 2 \circ e \circ 4,$$
+
+    \noindent
+    kde $k \in \mathbb{N}$, přičemž zastupuje část „$\forall v (v =$“.
+
+    Pro predikát $F$ vyjadřující $A$, pak $A^\ast$ je vyjádřitelná predikátem $F^\ast$ jako
+
+    $$F^\ast(n) = \exists v(v = k \circ \mathsf{C}(1, \overline{n}) \circ 2 \circ e \circ 4 \wedge F(v)),$$
+
+    \noindent
+    přičemž platí, že
+
+    $$F^\ast(n) \Longleftrightarrow G(F_n(n)) \in A \Longleftrightarrow \exists v(v = G(E_n(n)) \wedge F(v)).$$
+
+    Následně již pro dokončení důkazu stačí pouze aplikovat Tarského větu.
+
+    Nechť množina $\{G(\varphi) \; | \; \varphi \text{ je věta jazyka } T_\mathsf{C} \text{ a } T_\mathsf{C} \models \varphi\},$ je vyjádřitelná, přičemž dále bude značena jako $T$. Z \textit{G2} je vyjádřitelná i množina $\tilde{T}$ a z \textit{G1} také $\tilde{T}^\ast$. Nechť $Z$ vyjadřuje $\tilde{T}^\ast$ a nechť $G(Z) = z$, tedy $Z = E_Z$. Následně platí, že
+
+    \begin{align*}
+        Z(z) \text{ je věta jazyka } T_\mathsf{C} \text{ a } T_\mathsf{C} \models Z(z) &\stackrel{\text{def. }Z}{\Longleftrightarrow} z \in \tilde{T}^\ast \\
+        &\stackrel{\text{def. }\ast}{\Longleftrightarrow} G(Z(z)) \in \tilde{T} \\
+        &\stackrel{\text{def. }\sim}{\Longleftrightarrow} G(Z(z)) \not\in T \\
+        &\stackrel{\text{def. }T}{\Longleftrightarrow} Z(z) \text{ není věta jazyka } T_\mathsf{C} \text{ nebo } T_\mathsf{C} \not\models Z(z). \\
+    \end{align*}
+
+    \noindent
+    Tudíž dochází ke sporu a důkaz je uzavřen.
+\end{proof}
+
+\end{document}
